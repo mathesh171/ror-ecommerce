@@ -13,11 +13,8 @@ RUN apt-get update -y && apt-get install -y \
 
 RUN gem update --system && gem install bundler
 
-WORKDIR /var/www
-
-RUN git clone https://github.com/drhenner/ror_ecommerce.git
-
-WORKDIR ${APP_DIR}
+WORKDIR /var/www/ror_ecommerce
+COPY . .
 
 RUN grep -q 'gem "mysql2"' Gemfile || echo 'gem "mysql2"' >> Gemfile
 
