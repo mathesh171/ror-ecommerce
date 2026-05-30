@@ -1,22 +1,34 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_REGION: ap-south-1
+    AWS_ACCOUNT_ID: 397745288445
+    ECR_REPO_NAME: mathesh-manual-ror-repo
+    CONTAINER_NAME: container1
+
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 397745288445.dkr.ecr.ap-south-1.amazonaws.com
+      - echo "Logging in to Amazon ECR"
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME
+      - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
 
   build:
     commands:
-      - echo Build started on `date`
-      - docker build --platform linux/amd64 -t mathesh-manual-ror-repo .
-      - docker tag mathesh-manual-ror-repo:latest 397745288445.dkr.ecr.ap-south-1.amazonaws.com/mathesh-manual-ror-repo:latest
+      - echo "Building RoR Docker image"
+      - docker build --platform linux/amd64 -t $IMAGE_URI:$IMAGE_TAG .
+      - docker tag $IMAGE_URI:$IMAGE_TAG $IMAGE_URI:latest
 
   post_build:
     commands:
-      - echo Pushing Docker image...
-      - docker push 397745288445.dkr.ecr.ap-south-1.amazonaws.com/mathesh-manual-ror-repo:latest
-      - printf '[{"name":"rails-container","imageUri":"397745288445.dkr.ecr.ap-south-1.amazonaws.com/mathesh-manual-ror-repo:latest"}]' > imagedefinitions.json
+      - echo "Pushing image to ECR"
+      - docker push $IMAGE_URI:$IMAGE_TAG
+      - docker push $IMAGE_URI:latest
+      - echo "Creating imagedefinitions.json for ECS"
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$IMAGE_URI:$IMAGE_TAG" > imagedefinitions.json
+      - cat imagedefinitions.json
 
 artifacts:
   files:
