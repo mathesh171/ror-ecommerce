@@ -10,25 +10,26 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "Logging in to Amazon ECR..."
+      - echo "Login to ECR"
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME
-      - IMAGE_TAG=latest
-      - echo "IMAGE_URI=$IMAGE_URI"
-      - echo "IMAGE_TAG=$IMAGE_TAG"
+      - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - echo $IMAGE_URI
+      - echo $IMAGE_TAG
       - ls -la
-      - test -f Dockerfile || (echo "Dockerfile not found in repo root" && exit 1)
 
   build:
     commands:
-      - echo "Building Docker image..."
+      - echo "Build Docker image"
       - docker build --platform linux/amd64 -t $IMAGE_URI:$IMAGE_TAG .
+      - docker tag $IMAGE_URI:$IMAGE_TAG $IMAGE_URI:latest
 
   post_build:
     commands:
-      - echo "Pushing Docker image..."
+      - echo "Push Docker image"
       - docker push $IMAGE_URI:$IMAGE_TAG
-      - echo "Creating imagedefinitions.json..."
+      - docker push $IMAGE_URI:latest
+      - echo "Create imagedefinitions.json"
       - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$IMAGE_URI:$IMAGE_TAG" > imagedefinitions.json
       - cat imagedefinitions.json
 
