@@ -6,7 +6,7 @@ Hadean::Application.routes.draw do
   namespace(:admin){ namespace(:customer_service){ resources :comments } }
 
   resources :user_sessions, only: [:new, :create, :destroy]
-
+  get "/health", to: proc { [200, {}, ["OK"]] }
   get 'admin'       => 'admin/overviews#index'
   get 'login'       => 'user_sessions#new'
   get 'logout'      => 'user_sessions#destroy'
