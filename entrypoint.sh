@@ -23,7 +23,7 @@ echo "Checking RDS..."
 mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "SELECT 1;"
 
 echo "Starting Rails..."
-bundle exec rails server -b 0.0.0.0 -p 3000 -e production
+bundle exec rails server -b 0.0.0.0 -p 3000 -e production &
 
 echo "Starting Nginx..."
 exec nginx -g "daemon off;"
