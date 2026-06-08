@@ -5,7 +5,7 @@ env:
     AWS_REGION: ap-south-1
     AWS_ACCOUNT_ID: 397745288445
     ECR_REPO_NAME: mathesh-manual-ror-repo
-    CONTAINER_NAME: cont2
+    CONTAINER_NAME: container2
 
 phases:
   pre_build:
