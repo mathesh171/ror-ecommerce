@@ -20,11 +20,23 @@ production:
 DBEOF
 
 echo "Checking RDS..."
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "SELECT 1;"
+until mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "SELECT 1;" >/dev/null 2>&1
+do
+  echo "Waiting for RDS..."
+  sleep 5
+done
+
+export RAILS_ENV=production
+export RAILS_SERVE_STATIC_FILES=true
+
+echo "Precompiling assets..."
+bundle exec rails assets:precompile || true
 
 echo "Starting Rails..."
-bundle exec rails server -b 0.0.0.0 -p 3000 -e production &
-#bundle exec puma -b tcp://0.0.0.0:3000 -e production &
+bundle exec rails server \
+  -b 0.0.0.0 \
+  -p 3000 \
+  -e production &
 
 echo "Starting Nginx..."
 exec nginx -g "daemon off;"
