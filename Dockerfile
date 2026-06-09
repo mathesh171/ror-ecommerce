@@ -1,4 +1,4 @@
-FROM ruby:3.3.8-slim
+FROM public.ecr.aws/docker/library/ruby:3.3.8-slim
 
 ENV APP_DIR=/var/www/ror_ecommerce
 ENV RAILS_ENV=production
