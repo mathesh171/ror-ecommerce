@@ -29,8 +29,14 @@ done
 export RAILS_ENV=production
 export RAILS_SERVE_STATIC_FILES=true
 
-echo "Precompiling assets..."
-bundle exec rails assets:precompile || true
+
+echo "Running database migrations..."
+bundle exec rails db:migrate
+
+echo "Running database seeds..."
+bundle exec rails db:seed || true
+
+
 
 echo "Starting Rails..."
 bundle exec rails server \
