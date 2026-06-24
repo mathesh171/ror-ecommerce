@@ -40,5 +40,12 @@ Hadean::Application.configure do
     )
   end
 
+  config.log_level = :info
+
+  config.logger = ActiveSupport::TaggedLogging.new(
+    ActiveSupport::Logger.new(
+      Rails.root.join("log/production.log")
+    )
+  )
   config.active_storage.service = :amazon
 end
