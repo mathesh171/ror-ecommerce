@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+
 ruby "3.3.8"
 
 gem 'rails', '~> 8.1.0'
@@ -13,23 +14,23 @@ gem 'turbo-rails'
 gem 'stimulus-rails'
 
 gem "activemerchant", '~> 1.137'
-gem "american_date",  '~> 1.2'
+gem "american_date", '~> 1.2'
 
 gem 'authlogic', '~> 6.6'
-gem 'scrypt',    '~> 3.0'
+gem 'scrypt', '~> 3.0'
 
 gem 'awesome_nested_set', '~> 3.9'
 
 gem 'aws-sdk-s3', '~> 1.0'
 gem 'kramdown'
-gem 'cancancan',  '~> 3.6'
+gem 'cancancan', '~> 3.6'
 gem 'jbuilder', '~> 2.14'
-gem "friendly_id", '~> 5.5'
+gem 'friendly_id', '~> 5.5'
 
 gem 'nokogiri', '>= 1.13'
 gem 'prawn', '>= 2.0'
 
-gem "config", '~> 4.0'
+gem 'config', '~> 4.0'
 
 gem 'rake', '>= 13.0'
 
@@ -40,6 +41,8 @@ gem 'pagy', '~> 9.0'
 
 gem 'image_processing', '~> 1.2'
 
+gem 'mysql2'
+
 group :production do
   # gem 'pg'
 end
@@ -49,8 +52,6 @@ group :development do
   gem "binding_of_caller", '~> 1.0'
   gem 'yard'
 end
-
-gem 'trilogy'
 
 group :test, :development do
   gem 'debug'
@@ -66,5 +67,5 @@ group :test do
   gem 'rails-controller-testing'
   gem 'rspec-rails', '~> 7.0'
   gem 'email_spec', '~> 2.2'
-  gem "faker"
+  gem 'faker'
 end
