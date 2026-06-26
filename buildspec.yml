@@ -1,37 +1,20 @@
 version: 0.2
 
-env:
-  variables:
-    AWS_REGION: ap-south-1
-    AWS_ACCOUNT_ID: 397745288445
-    ECR_REPO_NAME: mathesh-manual-ror-repo
-    CONTAINER_NAME: container2
-
 phases:
   pre_build:
     commands:
-      - echo "Login to ECR"
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME
+      - IMAGE_URI=$ECR_REPO
       - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo $IMAGE_URI
-      - echo $IMAGE_TAG
-      - ls -la
 
   build:
     commands:
-      - echo "Build Docker image"
-      - docker build --no-cache --platform linux/amd64 -t $IMAGE_URI:$IMAGE_TAG .
-      - docker tag $IMAGE_URI:$IMAGE_TAG $IMAGE_URI:latest
+      - docker build --platform linux/amd64 -t $IMAGE_URI:$IMAGE_TAG .
 
   post_build:
     commands:
-      - echo "Push Docker image"
       - docker push $IMAGE_URI:$IMAGE_TAG
-      - docker push $IMAGE_URI:latest
-      - echo "Create imagedefinitions.json"
       - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$IMAGE_URI:$IMAGE_TAG" > imagedefinitions.json
-      - cat imagedefinitions.json
 
 artifacts:
   files:
